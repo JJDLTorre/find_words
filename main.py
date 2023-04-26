@@ -1,22 +1,10 @@
+import wget
+import os
 
-
-def main():
-    with open("en_US.dic", 'r') as f:
-        lines = f.readlines()
-        line_count = len(lines)
-        print(f"Line_count: {line_count}")
-        for word_flag in lines:
-            word = word_flag.split('/')[0]
-
-            if (not word.isalpha()) or (not word.islower()) or (len(word) < 3) or (len(word) != 5):
-                continue
-
-            letters_to_match = 'moneyl'
-
-            if not match_letters(letters_to_match, word):
-                continue
-
-            print(word)
+filename = './dictionaries/en/en_US.dic'
+if not os.path.isfile(filename):
+    url = 'https://github.com/LibreOffice/dictionaries/raw/master/en/en_US.dic'
+    filename = wget.download(url)
 
 
 def match_letters(letters_to_match, word):
@@ -35,6 +23,29 @@ def match_letters(letters_to_match, word):
             return False
 
     return True
+
+
+def main():
+    letters_to_match = input("Letters :")
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        line_count = len(lines)
+        print(f"Line_count: {line_count}")
+        for word_flag in lines:
+            word_flag_strip = word_flag.strip()
+            if '/' in word_flag_strip:
+                word = word_flag_strip.split('/')[0]
+            else:
+                word = word_flag_strip
+
+            # This is the invers
+            if (not word.isalpha()) or (not word.islower()) or (len(word) < 3):
+                continue
+
+            if not match_letters(letters_to_match, word):
+                continue
+
+            print(word)
 
 
 if __name__ == "__main__":
